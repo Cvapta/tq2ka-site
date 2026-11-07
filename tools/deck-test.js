@@ -42,7 +42,7 @@ const [, , W = '1440', tag = 'd'] = process.argv;
       if (wait > 0) await p.waitForTimeout(wait);
     }
   }
-  await spin(2.5, 1, 1);
+  await spin(2.5, 2, 1);
   const midHint = await hint();
   const midWave = await wavePx();
   await p.screenshot({ path: `tools/shots/deck_${tag}_spin.png` });

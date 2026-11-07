@@ -109,7 +109,8 @@
   $$('[data-reveal]').forEach((el) => revIO.observe(el));
 
   /* ───────── Пластинка: крутишь — играет песня, от неё бежит волна ─────────
-     1 оборот в секунду = обычная скорость и тон; быстрее — выше и быстрее, назад — задом наперёд.
+     1 оборот в секунду = обычная скорость и тон (это максимум: быстрее ×1 не играет);
+     медленнее — ниже и тягучее, назад — задом наперёд (тоже не быстрее ×1).
      Отпустил — крутится по инерции и замедляется, потом снова медленное вращение «мотора». */
   const deck = $('[data-turntable]');
   if (deck) {
@@ -221,6 +222,7 @@
     const release = (e) => {
       if (!holding) return;
       holding = false;
+      vel = Math.max(-NORMAL, Math.min(NORMAL, vel)); // по инерции не быстрее ×1
       deck.classList.remove('is-grabbing');
       try { deck.releasePointerCapture(e.pointerId); } catch (_) { /* уже отпущен */ }
     };
@@ -235,7 +237,7 @@
         grab();
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        vel = Math.max(vel, 0) + 540;
+        vel = NORMAL;
         grab();
       }
     });
@@ -337,7 +339,7 @@
       angle %= 360;
       spinEl.style.rotate = angle.toFixed(2) + 'deg';
 
-      const rate = active ? Math.max(-4, Math.min(4, vel / NORMAL)) : 0;
+      const rate = active ? Math.max(-1, Math.min(1, vel / NORMAL)) : 0; // максимум ×1
       if (audio) {
         audio.setRate(rate);
         audio.gain.gain.setTargetAtTime(active ? Math.min(1, Math.abs(rate) / 0.12) : 0, audio.ctx.currentTime, 0.04);

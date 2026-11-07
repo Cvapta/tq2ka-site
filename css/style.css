@@ -233,19 +233,13 @@ a { color: inherit; }
   align-items: center;
 }
 @media (min-width: 960px) {
-  /* фото слева, текст справа */
+  /* текст слева, карточка с фото справа */
   .hero {
     min-height: 100svh;
-    grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
-    gap: 72px;
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+    gap: 32px;
     padding-bottom: 120px;
   }
-  .hero__art { grid-column: 1; grid-row: 1; }
-  .hero__text { grid-column: 2; grid-row: 1; }
-  .hero .hero__facets { right: auto; left: -14%; }
-  /* пластинка на правом краю фото — к тексту; подпись справа под ней */
-  .hero .badge { left: auto; right: -70px; }
-  .hero .badge__hint { right: auto; left: 58%; text-align: left; transform-origin: 0 0; }
 }
 
 /* схема огранки бриллианта на фоне */
@@ -298,7 +292,7 @@ a { color: inherit; }
 
 /* фото в рамке огранки «изумруд» */
 .hero__art { position: relative; justify-self: center; width: min(470px, 100%); margin-top: 24px; }
-@media (min-width: 960px) { .hero__art { justify-self: start; margin-top: 40px; } }
+@media (min-width: 960px) { .hero__art { justify-self: end; margin-top: 40px; } }
 
 .gem { position: relative; margin: 0; aspect-ratio: 4 / 5; }
 .gem__clip {
@@ -404,18 +398,20 @@ a { color: inherit; }
 }
 @keyframes cue { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
 
-/* мобильный порядок: имя → фото → текст */
+/* телефон, как у Марины: имя → текст → кнопки → большое фото с пластинкой-наклейкой на углу */
 @media (max-width: 959px) {
+  .hero { gap: 0; padding-bottom: 72px; }
   .hero__text { display: contents; }
-  .eyebrow { order: 0; margin-bottom: -28px; }
+  .eyebrow { order: 0; margin: 0 0 14px; }
   .hero__name { order: 1; }
-  /* на телефоне волна идёт под именем, не по буквам */
-  .hero__art { order: 2; width: min(400px, 80%); margin-top: 118px; }
-  .hero__intro { order: 3; margin-top: 0; }
-  .hero__cta { order: 4; margin-top: -16px; }
-  /* на телефоне пластинка в правом верхнем углу фото — волна бежит влево по свободному месту */
-  .badge { width: 124px; height: 124px; left: auto; right: -14px; top: -84px; }
-  .badge__hint { top: auto; bottom: calc(100% + 2px); right: 30%; font-size: 21px; }
+  .hero__name .n1 { font-size: 36vw; }
+  .hero__name .n2 { font-size: 12.2vw; margin: .08em 0 0 4%; }
+  .hero__intro { order: 2; margin-top: 28px; }
+  .hero__cta { order: 3; margin-top: 26px; }
+  .hero__art { order: 4; width: 100%; margin-top: 104px; justify-self: stretch; }
+  /* пластинка на правом верхнем углу фото, наполовину над ним; волна бежит влево по краю фото */
+  .badge { width: 116px; height: 116px; left: auto; right: -4px; top: -58px; }
+  .badge__hint { top: 2px; bottom: auto; left: auto; right: calc(100% + 8px); font-size: 21px; text-align: right; transform-origin: 100% 0; }
   .note { display: none; }
 }
 
@@ -586,11 +582,12 @@ a { color: inherit; }
 .quote blockquote { margin: 0; }
 .quote blockquote p {
   margin: 0;
-  font: italic 300 clamp(48px, 7.4vw, 108px)/1 var(--serif); letter-spacing: -.015em;
+  font: italic 300 clamp(40px, 6vw, 88px)/1.05 var(--serif); letter-spacing: -.015em;
+  text-wrap: balance;
 }
-.quote blockquote p span { display: block; }
+.quote blockquote p span { display: block; text-wrap: balance; }
 .quote blockquote p::before { content: "«"; color: var(--pink); }
-.quote blockquote p::after { content: "»"; color: var(--pink); }
+.quote blockquote p span::after { content: "»"; color: var(--pink); }
 .quote figcaption { margin-top: 22px; font: 600 26px/1 var(--hand); color: var(--pink); }
 .quote__wave {
   display: block; width: 260px; margin: 26px auto 0;
