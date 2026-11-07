@@ -180,7 +180,7 @@ a { color: inherit; }
 .menu-full nav { display: flex; flex-direction: column; gap: 4px; }
 .menu-full nav a { font: 500 clamp(40px, 11vw, 64px)/1.15 var(--serif); text-decoration: none; }
 .menu-full nav a:hover { color: var(--pink); font-style: italic; }
-.menu-full .btn { align-self: flex-start; }
+.menu-full__btns { display: flex; flex-wrap: wrap; gap: 12px; }
 
 /* ───────── Кнопки и ссылки ───────── */
 .btn {
@@ -609,6 +609,22 @@ a { color: inherit; }
 .foot__h { margin: 10px 0 18px; font: 500 clamp(56px, 7.4vw, 112px)/.95 var(--serif); letter-spacing: -.02em; }
 .foot__h em { font-weight: 300; color: #ff6e9a; }
 .foot__p { margin: 0 0 32px; color: rgba(241, 241, 246, .7); }
+
+/* соцсети: пока только Telegram */
+.social { margin-top: 44px; }
+.social__t { margin: 0 0 14px; font-size: 14px; color: rgba(241, 241, 246, .6); }
+.tg { display: inline-flex; align-items: center; gap: 16px; text-decoration: none; color: var(--foot-ink); }
+.tg__i {
+  flex: none; width: 54px; height: 54px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid rgba(241, 241, 246, .3);
+  transition: background-color .25s, border-color .25s, color .25s;
+}
+.tg__i svg { width: 22px; height: 22px; translate: -1px 1px; }
+.tg__n { font: 400 clamp(24px, 2.2vw, 30px)/1.1 var(--serif); transition: color .25s; }
+.tg__n small { display: block; margin-top: 4px; font: 400 14px/1.2 var(--sans); color: rgba(241, 241, 246, .6); }
+.tg:hover .tg__i { background: #ff6e9a; border-color: #ff6e9a; color: #fff; }
+.tg:hover .tg__n { color: #ff6e9a; }
 
 .foot__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(241, 241, 246, .16); }
 .foot__list li { border-bottom: 1px solid rgba(241, 241, 246, .16); }
