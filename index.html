@@ -58,7 +58,6 @@
   <!-- ───────── Шапка ───────── -->
   <header class="site-header" data-header>
     <a class="logo" href="#top" aria-label="tq2ka, на главную">
-      <img class="logo__img" src="img/logo.png" width="44" height="44" alt="">
       <span class="logo__t">tq2ka</span>
     </a>
     <nav class="nav" aria-label="Меню">
@@ -100,6 +99,7 @@
         <polygon points="300,140 413,187 460,300 413,413 300,460 187,413 140,300 187,187"/>
         <path d="M300 20 300 140M498 102 413 187M580 300H460M498 498 413 413M300 580V460M102 498 187 413M20 300H140M102 102 187 187M300 20 413 187 580 300 413 413 300 580 187 413 20 300 187 187Z"/>
       </svg>
+      <canvas class="hero__wave" aria-hidden="true"></canvas>
 
       <div class="hero__text">
         <p class="eyebrow" data-reveal><span class="spark" aria-hidden="true">✦</span> электроника · R&amp;B · ремиксы</p>
@@ -107,7 +107,6 @@
           <span class="n1">tq2ka</span>
           <span class="n2">алмазный человек</span>
         </h1>
-        <svg class="wave" viewBox="0 0 1000 160" preserveAspectRatio="none" aria-hidden="true"><path data-wave/></svg>
         <p class="hero__intro" data-reveal>Привет, я tq2ka. Делаю электронику и&nbsp;R&amp;B, а&nbsp;иногда превращаю народные хиты в&nbsp;дабстеп. Четыре релиза уже в&nbsp;Яндекс Музыке.</p>
         <p class="hero__cta" data-reveal>
           <a class="btn btn--pink" data-magnetic href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
@@ -132,13 +131,17 @@
             <polygon points="84,14 316,14 386,84 386,416 316,486 84,486 14,416 14,84"/>
           </svg>
         </figure>
-        <div class="badge" data-parallax="0.08" aria-hidden="true">
+        <div class="badge" data-parallax="0.08" data-turntable data-src="audio/almaz.mp3" tabindex="0" role="button"
+             aria-label="Пластинка «я алмазный человек»: покрути её мышкой или пальцем — заиграет песня. Скорость и тон зависят от скорости вращения. С клавиатуры: стрелки влево и вправо.">
+          <div class="badge__spin">
           <span class="badge__disc"></span>
-          <svg class="badge__text" viewBox="0 0 200 200">
+          <svg class="badge__text" viewBox="0 0 200 200" aria-hidden="true">
             <defs><path id="circ" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
             <text textLength="462" lengthAdjust="spacing"><textPath href="#circ" textLength="462" lengthAdjust="spacing">tq2ka ✦ электроника ✦ R&amp;B ✦ алмазный человек ✦</textPath></text>
           </svg>
-          <span class="badge__core">✦</span>
+          </div>
+          <span class="badge__core" aria-hidden="true">✦</span>
+          <span class="badge__hint" aria-hidden="true">покрути меня</span>
         </div>
       </div>
 
@@ -198,7 +201,7 @@
           <h3 class="rcard__t release__name">йцукен</h3>
           <a class="rcard__go" href="https://music.yandex.ru/search?text=tq2ka%20%D0%B9%D1%86%D1%83%D0%BA%D0%B5%D0%BD" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
         </li>
-        <li class="rcard release" id="almaz" data-audio="" data-reveal>
+        <li class="rcard release" id="almaz" data-audio="audio/almaz.mp3" data-reveal>
           <div class="rcard__case release__case">
             <span class="disc" aria-hidden="true"></span>
             <img class="rcard__cover" src="img/almaz.webp" width="300" height="300" loading="lazy" alt="Обложка «я алмазный человек»: алмазная фигура среди летящих осколков">
@@ -266,8 +269,8 @@
         <div class="quote__cover">
           <img src="img/almaz.webp" width="300" height="300" loading="lazy" alt="Обложка «я алмазный человек»">
         </div>
-        <blockquote><p>Я&nbsp;алмазный человек</p></blockquote>
-        <figcaption>tq2ka, название трека</figcaption>
+        <blockquote><p>Я&nbsp;алмазный человек <span>сквозь удары, сквозь век</span></p></blockquote>
+        <figcaption>tq2ka, из трека «я алмазный человек»</figcaption>
         <svg class="quote__wave" viewBox="0 0 300 30" aria-hidden="true"><path d="M2 15c18-14 30 14 48 0s30-14 48 0 30 14 48 0 30-14 48 0 30 14 48 0 30-14 48 0"/></svg>
       </figure>
     </section>

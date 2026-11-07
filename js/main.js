@@ -1,5 +1,5 @@
 /* tq2ka.ru — интерактив
-   тема (системная + кнопка) · шапка и прогресс · меню · появление · волна ·
+   тема (системная + кнопка) · шапка и прогресс · меню · появление · пластинка со звуком и волной ·
    блики на фото · искры за курсором · магнитные кнопки · параллакс ·
    радуга на CD · плеер (data-audio) · пасхалка «йцукен» (q w e r t y) */
 
@@ -108,17 +108,273 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   $$('[data-reveal]').forEach((el) => revIO.observe(el));
 
-  /* ───────── Звуковая волна через имя ───────── */
-  const wave = $('[data-wave]');
-  if (wave) {
-    let d = '';
-    for (let x = 0; x <= 1000; x += 4) {
-      const env = 0.25 + 0.75 * Math.sin((Math.PI * x) / 1000);       // тише по краям
-      const beat = 0.55 + 0.45 * Math.sin(x * 0.012 + 0.6);            // «громкость»
-      const y = 80 + 58 * env * beat * Math.sin(x * 0.045) + 10 * Math.sin(x * 0.009);
-      d += (x ? 'L' : 'M') + x + ' ' + y.toFixed(1);
+  /* ───────── Пластинка: крутишь — играет песня, волна бежит от неё влево ─────────
+     1 оборот в секунду = обычная скорость и тон; быстрее — выше и быстрее, назад — задом наперёд.
+     Отпустил — крутится по инерции и замедляется, потом снова медленное вращение «мотора». */
+  const deck = $('[data-turntable]');
+  if (deck) {
+    const spinEl = $('.badge__spin', deck);
+    const hint = $('.badge__hint', deck);
+    const hero = $('.hero');
+    const waveCv = $('.hero__wave');
+    const wctx = waveCv.getContext('2d');
+    const NORMAL = 360;                          // °/с — обычная скорость песни
+    const IDLE = reduceMotion.matches ? 0 : 18;  // медленное вращение в покое, °/с
+    const DEFAULT_HINT = hint ? hint.textContent : '';
+
+    let angle = 0, vel = IDLE, holding = false, keyDir = 0;
+    let lastA = 0, lastT = 0, lastMove = 0;
+    let active = false;     // звук включён: крутят рукой или пластинка ещё крутится по инерции
+    let audio = null;
+    let loading = null;
+
+    function ensureAudio() {
+      if (audio) { if (audio.ctx.state !== 'running') audio.ctx.resume(); return loading; }
+      if (loading) return loading;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      const ctx = new AC({ latencyHint: 'interactive' });
+      ctx.resume(); // в обработчике жеста — иначе браузер не даст звук
+      loading = (async () => {
+        const res = await fetch(deck.dataset.src);
+        const buf = await ctx.decodeAudioData(await res.arrayBuffer());
+        const gain = ctx.createGain();
+        gain.gain.value = 0;
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 1024;
+        gain.connect(analyser);
+        analyser.connect(ctx.destination);
+        let setRate;
+        if (ctx.audioWorklet) {
+          await ctx.audioWorklet.addModule('js/turntable-worklet.js');
+          const node = new AudioWorkletNode(ctx, 'turntable', { numberOfInputs: 0, outputChannelCount: [2] });
+          const left = buf.getChannelData(0).slice();
+          const right = buf.numberOfChannels > 1 ? buf.getChannelData(1).slice() : null;
+          node.port.postMessage({ left, right, sampleRate: buf.sampleRate }, right ? [left.buffer, right.buffer] : [left.buffer]);
+          node.connect(gain);
+          const p = node.parameters.get('rate');
+          setRate = (r) => p.setTargetAtTime(r, ctx.currentTime, 0.025);
+        } else {
+          // запасной вариант без AudioWorklet: играет только вперёд
+          const node = ctx.createBufferSource();
+          node.buffer = buf;
+          node.loop = true;
+          node.playbackRate.value = 0.001;
+          node.connect(gain);
+          node.start();
+          setRate = (r) => node.playbackRate.setTargetAtTime(Math.max(Math.abs(r), 0.001), ctx.currentTime, 0.025);
+        }
+        audio = { ctx, gain, analyser, data: new Float32Array(analyser.fftSize), setRate };
+        return audio;
+      })().catch((err) => {
+        console.warn('пластинка: звук не загрузился', err);
+        loading = null;
+        return null;
+      });
+      return loading;
     }
-    wave.setAttribute('d', d);
+
+    // прогреваем кэш, когда мышь только подлетает к пластинке
+    deck.addEventListener('pointerenter', () => { fetch(deck.dataset.src).catch(() => {}); }, { once: true });
+
+    const geom = () => {
+      const r = deck.getBoundingClientRect();
+      return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+    };
+    const wrap = (d) => ((d % 360) + 540) % 360 - 180;
+
+    function grab() {
+      document.dispatchEvent(new CustomEvent('tq:scratch'));
+      ensureAudio();
+      active = true;
+      wake();
+    }
+
+    deck.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
+      deck.setPointerCapture(e.pointerId);
+      const { cx, cy } = geom();
+      holding = true;
+      deck.classList.add('is-grabbing');
+      lastA = Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI;
+      lastT = e.timeStamp;
+      lastMove = performance.now();
+      vel = 0; // рука останавливает пластинку
+      grab();
+    });
+    deck.addEventListener('pointermove', (e) => {
+      if (!holding) return;
+      const { cx, cy } = geom();
+      const dx = e.clientX - cx, dy = e.clientY - cy;
+      const a = Math.atan2(dy, dx) * 180 / Math.PI;
+      const dt = Math.max((e.timeStamp - lastT) / 1000, 0.004);
+      if (Math.hypot(dx, dy) > 8) { // у самой оси угол скачет — пропускаем
+        const d = wrap(a - lastA);
+        angle += d;
+        vel += (d / dt - vel) * (1 - Math.exp(-dt / 0.07));
+      }
+      lastA = a;
+      lastT = e.timeStamp;
+      lastMove = performance.now();
+    });
+    const release = (e) => {
+      if (!holding) return;
+      holding = false;
+      deck.classList.remove('is-grabbing');
+      try { deck.releasePointerCapture(e.pointerId); } catch (_) { /* уже отпущен */ }
+    };
+    deck.addEventListener('pointerup', release);
+    deck.addEventListener('pointercancel', release);
+
+    // клавиатура: стрелки крутят вперёд/назад, Enter/пробел — толчок
+    deck.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        keyDir = e.key === 'ArrowRight' ? 1 : -1;
+        grab();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        vel = Math.max(vel, 0) + 540;
+        grab();
+      }
+    });
+    deck.addEventListener('keyup', (e) => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') keyDir = 0; });
+    deck.addEventListener('blur', () => { keyDir = 0; });
+
+    // ── волна ──
+    let W = 0, H = 0, wdpr = 1, rgb = [46, 98, 240], rgbAt = -1e9;
+    const toRgb = (hex) => {
+      const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
+      return m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [46, 98, 240];
+    };
+    const hist = []; // [время, амплитуда 0..1, фаза] — что пластинка «излучила» в каждый кадр
+    let ph = 0, level = 0;
+    function sizeWave() {
+      wdpr = Math.min(devicePixelRatio || 1, 2);
+      W = waveCv.clientWidth; H = waveCv.clientHeight;
+      waveCv.width = Math.round(W * wdpr);
+      waveCv.height = Math.round(H * wdpr);
+    }
+    sizeWave();
+    new ResizeObserver(sizeWave).observe(waveCv);
+
+    function drawWave(now) {
+      wctx.setTransform(wdpr, 0, 0, wdpr, 0, 0);
+      wctx.clearRect(0, 0, W, H);
+      let any = false;
+      for (let i = 0; i < hist.length; i++) if (hist[i][1] > 0.01) { any = true; break; }
+      if (!any || hist.length < 2) return false;
+
+      const hr = waveCv.getBoundingClientRect(), dr = deck.getBoundingClientRect();
+      const r = dr.width / 2;
+      const sx = dr.left - hr.left + r * 0.06; // левый край пластинки
+      const sy = dr.top - hr.top + r;
+      const maxA = Math.min(64, r * 0.6);
+      const C = Math.max(360, W * 0.42);      // скорость бега волны, px/с
+      if (now - rgbAt > 500) { rgb = toRgb(css('--blue')); rgbAt = now; }
+
+      // прозрачность по громкости: тихие участки не видны, линия есть только там, где звук
+      const grad = wctx.createLinearGradient(sx, 0, 0, 0);
+      let lastStop = -1;
+      wctx.beginPath();
+      let j = hist.length - 2, started = false;
+      for (let x = sx; x >= -6; x -= 3) {
+        const d = sx - x;
+        const te = now - (d / C) * 1000;
+        while (j > 0 && hist[j][0] > te) j--;
+        if (hist[j][0] > te) break; // дальше — то, что было до истории
+        const h0 = hist[j], h1 = hist[j + 1];
+        const f = Math.min(1, Math.max(0, (te - h0[0]) / ((h1[0] - h0[0]) || 1)));
+        const a = h0[1] + (h1[1] - h0[1]) * f;
+        const p = h0[2] + (h1[2] - h0[2]) * f;
+        const env = Math.min(1, d / 36);
+        const y = sy + maxA * a * env * (Math.sin(p) + 0.28 * Math.sin(2.1 * p + 0.7)) / 1.28;
+        if (!started) { wctx.moveTo(x, y); started = true; } else wctx.lineTo(x, y);
+        const stop = Math.min(1, d / Math.max(sx, 1));
+        if (stop - lastStop > 0.012) {
+          grad.addColorStop(stop, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${Math.min(1, a / 0.1).toFixed(3)})`);
+          lastStop = stop;
+        }
+      }
+      if (lastStop < 1) grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+      wctx.lineWidth = 2.4;
+      wctx.lineCap = 'round';
+      wctx.lineJoin = 'round';
+      wctx.strokeStyle = grad;
+      wctx.shadowColor = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},.9)`;
+      wctx.shadowBlur = 10;
+      wctx.stroke();
+      wctx.shadowBlur = 0;
+      return true;
+    }
+
+    // ── главный цикл ──
+    let raf = 0, lastF = 0, heroVisible = true;
+    function frame(now) {
+      const dt = lastF ? Math.min((now - lastF) / 1000, 0.05) : 0.016;
+      lastF = now;
+
+      if (keyDir) {
+        vel += (keyDir * NORMAL - vel) * (1 - Math.exp(-dt / 0.15));
+        angle += vel * dt;
+      } else if (holding) {
+        if (now - lastMove > 50) vel *= Math.exp(-dt / 0.05); // держат неподвижно — стоит
+      } else {
+        if (active) {
+          vel *= Math.exp(-dt * 0.45);                                  // трение
+          vel -= Math.sign(vel) * Math.min(Math.abs(vel), 16 * dt);
+          if (Math.abs(vel) < 40) active = false;
+        } else {
+          vel += (IDLE - vel) * (1 - Math.exp(-dt / 0.8));              // мотор
+        }
+        angle += vel * dt;
+      }
+      if (holding || keyDir) active = true;
+      angle %= 360;
+      spinEl.style.rotate = angle.toFixed(2) + 'deg';
+
+      const rate = active ? Math.max(-4, Math.min(4, vel / NORMAL)) : 0;
+      if (audio) {
+        audio.setRate(rate);
+        audio.gain.gain.setTargetAtTime(active ? Math.min(1, Math.abs(rate) / 0.12) : 0, audio.ctx.currentTime, 0.04);
+        audio.analyser.getFloatTimeDomainData(audio.data);
+        let sum = 0;
+        for (let i = 0; i < audio.data.length; i++) sum += audio.data[i] * audio.data[i];
+        level += (Math.sqrt(sum / audio.data.length) - level) * (1 - Math.exp(-dt / 0.06));
+      } else {
+        level *= Math.exp(-dt / 0.1);
+      }
+
+      if (hint) {
+        let t = DEFAULT_HINT;
+        if (active && !audio && loading) t = 'секунду…';
+        else if (active && Math.abs(rate) > 0.03) t = (rate < 0 ? '◂ ' : '') + '×' + Math.abs(rate).toFixed(2);
+        else if (active) t = 'крути!';
+        if (hint.textContent !== t) hint.textContent = t;
+      }
+
+      ph += dt * Math.PI * 2 * (1.4 + 2.4 * Math.abs(rate));
+      hist.push([now, Math.min(1, level * 5), ph]);
+      while (hist.length > 2 && now - hist[0][0] > 4500) hist.shift();
+      return drawWave(now);
+    }
+    function loop(now) {
+      const energy = frame(now);
+      const keep = active || energy || (heroVisible && !document.hidden && IDLE > 0);
+      raf = keep ? requestAnimationFrame(loop) : 0;
+      if (!raf) lastF = 0;
+    }
+    function wake() { if (!raf) raf = requestAnimationFrame(loop); }
+
+    new IntersectionObserver(([en]) => { heroVisible = en.isIntersecting; wake(); }).observe(hero);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        holding = false; keyDir = 0; active = false;
+        if (audio) audio.gain.gain.setTargetAtTime(0, audio.ctx.currentTime, 0.02);
+      } else wake();
+    });
+    wake();
   }
 
   /* ───────── Блики на алмазной фигуре ───────── */
@@ -408,6 +664,7 @@
         audio.play().catch(() => setState(rel, false));
       });
     });
+    document.addEventListener('tq:scratch', () => { if (!audio.paused) audio.pause(); });
     audio.addEventListener('play', () => current && setState(current, true));
     audio.addEventListener('pause', () => current && setState(current, false));
     audio.addEventListener('ended', () => { if (current) { setState(current, false); $('.release__progress', current).style.setProperty('--p', 0); } });

@@ -119,12 +119,6 @@ a { color: inherit; }
 .site-header.is-hidden { transform: translateY(-100%); }
 
 .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; margin-right: auto; }
-.logo__img {
-  width: 44px; height: 44px; border-radius: 50%;
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.4px var(--pink);
-  transition: transform .6s cubic-bezier(.2, .7, .2, 1);
-}
-.logo:hover .logo__img { transform: rotate(-10deg) scale(1.06); }
 .logo__t { font: 500 26px/1 var(--serif); letter-spacing: -.01em; }
 
 .nav { display: none; }
@@ -280,24 +274,13 @@ a { color: inherit; }
   color: var(--pink);
 }
 
-/* звуковая волна через имя (вместо нитки) */
-.wave {
-  position: absolute; z-index: 0;
-  left: -8%; width: 125%; height: 150px;
-  top: clamp(110px, 13vw, 200px);
-  overflow: visible; pointer-events: none;
+/* звуковая волна: появляется, только когда крутят пластинку, бежит от неё влево */
+.hero__wave {
+  position: absolute; top: 0; left: 50%; z-index: 5;
+  width: 100vw; height: 100%;
+  translate: -50% 0;               /* на всю ширину окна, не только колонки */
+  pointer-events: none;
 }
-.wave path {
-  fill: none; stroke: var(--blue); stroke-width: 2.2; stroke-linecap: round;
-  stroke-dasharray: 8 10;
-  vector-effect: non-scaling-stroke;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .wave path { animation: flow 1.4s linear infinite; }
-  .wave { clip-path: inset(0 100% 0 0); animation: draw 2.4s .3s cubic-bezier(.6, .1, .2, 1) forwards; }
-}
-@keyframes flow { to { stroke-dashoffset: -36; } }
-@keyframes draw { to { clip-path: inset(0 0 0 0); } }
 
 .hero__intro {
   position: relative; z-index: 1;
@@ -340,11 +323,27 @@ a { color: inherit; }
 }
 .note svg path:last-child { stroke-dasharray: none; }
 
-/* крутящийся CD-бейдж */
+/* CD-пластинка: медленно вращается; если крутить рукой — играет песня */
 .badge {
   position: absolute; z-index: 4;
   left: -70px; top: 30%;
   width: 168px; height: 168px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.badge.is-grabbing { cursor: grabbing; }
+.badge:focus-visible { outline: 2px solid var(--pink); outline-offset: 6px; border-radius: 50%; }
+.badge__spin { position: absolute; inset: 0; }
+.badge__hint {
+  /* слева под пластинкой — не залезает на фото */
+  position: absolute; right: 58%; top: calc(100% + 2px);
+  rotate: -4deg; transform-origin: 100% 0;
+  white-space: nowrap; pointer-events: none; text-align: right;
+  font: 600 24px/1 var(--hand); color: var(--pink);
+  font-variant-numeric: tabular-nums;
 }
 .badge__disc, .disc, .shot__disc {
   --a: 20deg;
@@ -381,9 +380,6 @@ a { color: inherit; }
   position: absolute; inset: 0; display: grid; place-items: center;
   font-size: 22px; color: var(--pink);
 }
-@media (prefers-reduced-motion: no-preference) {
-  .badge__text, .badge__disc { animation: spin 22s linear infinite; }
-}
 @keyframes spin { to { rotate: 360deg; } }
 
 .scroll-cue {
@@ -407,12 +403,13 @@ a { color: inherit; }
   .eyebrow { order: 0; margin-bottom: -28px; }
   .hero__name { order: 1; }
   /* на телефоне волна идёт под именем, не по буквам */
-  .wave { top: calc(var(--head-h) + 236px); left: -4%; width: 108%; height: 46px; }
-  .hero__art { order: 2; width: min(400px, 80%); margin-top: 64px; }
+  .hero__art { order: 2; width: min(400px, 80%); margin-top: 118px; }
   .hero__intro { order: 3; margin-top: 0; }
   .hero__cta { order: 4; margin-top: -16px; }
-  .badge { width: 120px; height: 120px; left: -40px; top: 26%; }
-  .note { top: -58px; right: 0; }
+  /* на телефоне пластинка в правом верхнем углу фото — волна бежит влево по свободному месту */
+  .badge { width: 124px; height: 124px; left: auto; right: -14px; top: -84px; }
+  .badge__hint { top: auto; bottom: calc(100% + 2px); right: 30%; font-size: 21px; }
+  .note { display: none; }
 }
 
 /* ───────── Лента ───────── */
@@ -577,12 +574,13 @@ a { color: inherit; }
   margin: 0;
   font: italic 300 clamp(48px, 7.4vw, 108px)/1 var(--serif); letter-spacing: -.015em;
 }
+.quote blockquote p span { display: block; }
 .quote blockquote p::before { content: "«"; color: var(--pink); }
 .quote blockquote p::after { content: "»"; color: var(--pink); }
 .quote figcaption { margin-top: 22px; font: 600 26px/1 var(--hand); color: var(--pink); }
 .quote__wave {
   display: block; width: 260px; margin: 26px auto 0;
-  fill: none; stroke: var(--blue); stroke-width: 2; stroke-dasharray: 6 7; stroke-linecap: round;
+  fill: none; stroke: var(--blue); stroke-width: 2; stroke-linecap: round;
 }
 
 /* ───────── Подвал ───────── */
