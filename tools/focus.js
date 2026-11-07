@@ -1,0 +1,20 @@
+const { chromium } = require('C:/claude/marina-site/node_modules/playwright-core');
+(async () => {
+  const b = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
+  const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+  await p.goto('http://localhost:8770/', { waitUntil: 'networkidle' });
+  await p.keyboard.press('Tab'); await p.keyboard.press('Tab');
+  await p.waitForTimeout(300);
+  await p.screenshot({ path: 'tools/shots/focus.png', clip: { x: 0, y: 0, width: 600, height: 260 } });
+  await p.keyboard.press('Tab');
+  await p.waitForTimeout(200);
+  await p.screenshot({ path: 'tools/shots/focus2.png', clip: { x: 0, y: 0, width: 600, height: 260 } });
+  for (const k of ['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY']) await p.keyboard.press(k);
+  await p.waitForTimeout(1600);
+  const r = await p.locator('#ytsuken .release__case').boundingBox();
+  await p.screenshot({ path: 'tools/shots/gold.png', clip: { x: r.x - 20, y: r.y - 20, width: 520, height: 340 } });
+  await p.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+  await p.waitForTimeout(400);
+  await p.screenshot({ path: 'tools/shots/hero_bottom.png', clip: { x: 0, y: 600, width: 600, height: 300 } });
+  await b.close();
+})();
