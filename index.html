@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>tq2ka — музыкант</title>
+  <title>tq2ka — алмазный человек</title>
   <meta name="description" content="tq2ka — электроника и R&amp;B. Релизы: «Saint S, прости меня» (с ГИГАНСТКИЙ СИГМА), «Хава нагила (дабстеп ремикс)», «йцукен», «я алмазный человек». Слушать в Яндекс Музыке.">
   <link rel="canonical" href="https://tq2ka.ru/">
-  <meta name="theme-color" content="#e7eaee">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f7fa">
 
   <meta property="og:type" content="profile">
   <meta property="og:site_name" content="tq2ka">
-  <meta property="og:title" content="tq2ka — музыкант">
-  <meta property="og:description" content="Электроника и R&amp;B. Целиком из алмаза.">
+  <meta property="og:title" content="tq2ka — алмазный человек">
+  <meta property="og:description" content="Электроника и R&amp;B. Четыре релиза в Яндекс Музыке.">
   <meta property="og:url" content="https://tq2ka.ru/">
   <meta property="og:image" content="https://tq2ka.ru/img/og.jpg">
   <meta property="og:image:width" content="1200">
@@ -19,13 +20,17 @@
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
 
-  <link rel="preload" as="image" type="image/webp" href="img/tq2ka.webp" imagesrcset="img/tq2ka-640.webp 640w, img/tq2ka.webp 1086w" imagesizes="(min-width: 900px) 60vw, 100vw">
+  <link rel="preload" as="image" type="image/webp" href="img/tq2ka.webp">
   <link rel="preload" as="font" type="font/woff2" href="fonts/cormorant-garamond-latin-2fed1d.woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('tq2ka-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 
   <script type="application/ld+json">
   {
@@ -46,95 +51,250 @@
   </script>
 </head>
 <body>
-  <a class="skip" href="#releases">Перейти к релизам</a>
+  <a class="skip" href="#main">К содержанию</a>
+  <div class="progress" aria-hidden="true"><i></i></div>
+  <canvas class="trail" aria-hidden="true"></canvas>
 
-  <header class="hero">
-    <figure class="hero__photo" id="gem">
-      <picture>
-        <source type="image/webp" srcset="img/tq2ka-640.webp 640w, img/tq2ka.webp 1086w" sizes="(min-width: 900px) 60vw, 100vw">
-        <img src="img/tq2ka.jpg" width="1086" height="1086" alt="tq2ka: человек из прозрачного алмаза со стаканом розового лимонада на улице южного города" fetchpriority="high">
-      </picture>
-      <canvas class="hero__fire" aria-hidden="true"></canvas>
-    </figure>
-
-    <div class="hero__text">
-      <h1 class="wordmark">tq2ka</h1>
-      <p class="hero__line">Электроника и&nbsp;R&amp;B.<br>Целиком из&nbsp;алмаза.</p>
-      <p class="hero__actions">
-        <a class="btn" href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Слушать в&nbsp;Яндекс Музыке</a>
-        <a class="hero__link" href="#releases">Четыре релиза</a>
-      </p>
+  <!-- ───────── Шапка ───────── -->
+  <header class="site-header" data-header>
+    <a class="logo" href="#top" aria-label="tq2ka, на главную">
+      <img class="logo__img" src="img/logo.png" width="44" height="44" alt="">
+      <span class="logo__t">tq2ka</span>
+    </a>
+    <nav class="nav" aria-label="Меню">
+      <ul>
+        <li><a href="#top" aria-current="true"><span>Главная</span></a></li>
+        <li><a href="#releases"><span>Релизы</span></a></li>
+        <li><a href="#sound"><span>Звучание</span></a></li>
+        <li><a href="#listen"><span>Слушать</span></a></li>
+      </ul>
+    </nav>
+    <div class="head-r">
+      <button class="theme-t" type="button" data-theme-toggle aria-label="Тёмная тема" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+          <g class="sun"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g>
+          <path class="moon" d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>
+        </svg>
+      </button>
+      <a class="pill" href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Слушать</a>
+      <button class="burger" type="button" aria-label="Открыть меню" aria-expanded="false" data-burger><span></span><span></span></button>
     </div>
   </header>
 
-  <main>
-    <section class="releases" id="releases" aria-labelledby="releases-title">
-      <h2 class="releases__title" id="releases-title">Релизы</h2>
+  <div class="menu-full" data-menu hidden>
+    <nav aria-label="Меню">
+      <a href="#top">Главная</a>
+      <a href="#releases">Релизы</a>
+      <a href="#sound">Звучание</a>
+      <a href="#listen">Слушать</a>
+    </nav>
+    <a class="btn btn--pink" href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Яндекс Музыка <span aria-hidden="true">→</span></a>
+  </div>
+
+  <main id="main">
+
+    <!-- ───────── Первый экран ───────── -->
+    <section class="hero" id="top">
+      <svg class="hero__facets" viewBox="0 0 600 600" aria-hidden="true">
+        <polygon points="300,20 498,102 580,300 498,498 300,580 102,498 20,300 102,102"/>
+        <polygon points="300,140 413,187 460,300 413,413 300,460 187,413 140,300 187,187"/>
+        <path d="M300 20 300 140M498 102 413 187M580 300H460M498 498 413 413M300 580V460M102 498 187 413M20 300H140M102 102 187 187M300 20 413 187 580 300 413 413 300 580 187 413 20 300 187 187Z"/>
+      </svg>
+
+      <div class="hero__text">
+        <p class="eyebrow" data-reveal><span class="spark" aria-hidden="true">✦</span> электроника · R&amp;B · ремиксы</p>
+        <h1 class="hero__name" data-reveal>
+          <span class="n1">tq2ka</span>
+          <span class="n2">алмазный человек</span>
+        </h1>
+        <svg class="wave" viewBox="0 0 1000 160" preserveAspectRatio="none" aria-hidden="true"><path data-wave/></svg>
+        <p class="hero__intro" data-reveal>Привет, я tq2ka. Делаю электронику и&nbsp;R&amp;B, а&nbsp;иногда превращаю народные хиты в&nbsp;дабстеп. Четыре релиза уже в&nbsp;Яндекс Музыке.</p>
+        <p class="hero__cta" data-reveal>
+          <a class="btn btn--pink" data-magnetic href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" data-magnetic href="#releases">Смотреть релизы</a>
+        </p>
+      </div>
+
+      <div class="hero__art">
+        <p class="note" aria-hidden="true">
+          целиком<br>из алмаза
+          <svg viewBox="0 0 90 60"><path d="M80 6C60 4 30 14 18 44"/><path d="M10 36l8 10 8-9"/></svg>
+        </p>
+        <figure class="gem" id="gem" data-parallax="-0.06">
+          <div class="gem__clip">
+            <picture>
+              <source type="image/webp" srcset="img/tq2ka-640.webp 640w, img/tq2ka.webp 1086w" sizes="(min-width: 900px) 34vw, 90vw">
+              <img src="img/tq2ka.jpg" width="1086" height="1086" alt="tq2ka: человек из прозрачного алмаза со стаканом розового напитка на улице южного города" fetchpriority="high">
+            </picture>
+            <canvas class="gem__fire" aria-hidden="true"></canvas>
+          </div>
+          <svg class="gem__stitch" viewBox="0 0 400 500" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="84,14 316,14 386,84 386,416 316,486 84,486 14,416 14,84"/>
+          </svg>
+        </figure>
+        <div class="badge" data-parallax="0.08" aria-hidden="true">
+          <span class="badge__disc"></span>
+          <svg class="badge__text" viewBox="0 0 200 200">
+            <defs><path id="circ" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
+            <text textLength="462" lengthAdjust="spacing"><textPath href="#circ" textLength="462" lengthAdjust="spacing">tq2ka ✦ электроника ✦ R&amp;B ✦ алмазный человек ✦</textPath></text>
+          </svg>
+          <span class="badge__core">✦</span>
+        </div>
+      </div>
+
+      <a class="scroll-cue" href="#releases" aria-label="Прокрутить к релизам"><span></span></a>
+    </section>
+
+    <!-- ───────── Лента ───────── -->
+    <div class="ribbon" aria-hidden="true">
+      <div class="ribbon__track">
+        <span>йцукен</span><i>✦</i><span>Saint S, прости меня</span><i>✦</i><span>Хава нагила (дабстеп ремикс)</span><i>✦</i><span>я алмазный человек</span><i>✦</i>
+        <span>йцукен</span><i>✦</i><span>Saint S, прости меня</span><i>✦</i><span>Хава нагила (дабстеп ремикс)</span><i>✦</i><span>я алмазный человек</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- ───────── Релизы ───────── -->
+    <section class="section" id="releases" aria-labelledby="releases-h">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="script">что послушать</p>
+          <h2 id="releases-h">Релизы</h2>
+        </div>
+        <a class="more" href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Все в Яндекс Музыке <span aria-hidden="true">→</span></a>
+      </div>
 
       <!--
-        Как добавить трек или ссылки:
-        • data-audio="audio/имя.mp3" — появится кнопка «Слушать», диск будет крутиться;
-        • точная ссылка на релиз — замени адрес в «Найти в Яндекс Музыке»
-          на ссылку альбома (music.yandex.ru/album/…) и текст на «Слушать в Яндекс Музыке».
+        Трек в плеер: data-audio="audio/файл.mp3" у нужной карточки.
+        Точная ссылка: замени адрес поиска на music.yandex.ru/album/…
       -->
-      <ul class="releases__list">
-
-        <li class="release" id="saint-s" data-audio="">
-          <div class="release__case">
+      <ul class="cards">
+        <li class="rcard release" id="saint-s" data-audio="" data-reveal>
+          <div class="rcard__case release__case">
             <span class="disc" aria-hidden="true"></span>
-            <img class="release__cover" src="img/saint-s.webp" width="300" height="300" loading="lazy" alt="Обложка «Saint S, прости меня»: серебряная фигура на коленях в луче прожектора">
+            <img class="rcard__cover" src="img/saint-s.webp" width="300" height="300" loading="lazy" alt="Обложка «Saint S, прости меня»: серебряная фигура на коленях в луче прожектора">
+            <span class="tag">✦ дуэт</span>
           </div>
-          <div class="release__meta">
-            <h3 class="release__name">Saint S, прости меня</h3>
-            <p class="release__artist">tq2ka, ГИГАНСТКИЙ СИГМА</p>
-            <p class="release__listen"><a href="https://music.yandex.ru/search?text=tq2ka%20Saint%20S%2C%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%B8%20%D0%BC%D0%B5%D0%BD%D1%8F" target="_blank" rel="noopener">Найти в Яндекс Музыке</a></p>
-          </div>
+          <p class="rcard__by">tq2ka, ГИГАНСТКИЙ СИГМА</p>
+          <h3 class="rcard__t release__name">Saint S, прости меня</h3>
+          <a class="rcard__go" href="https://music.yandex.ru/search?text=tq2ka%20Saint%20S%2C%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%B8%20%D0%BC%D0%B5%D0%BD%D1%8F" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
         </li>
-
-        <li class="release" id="hava-nagila" data-audio="">
-          <div class="release__case">
+        <li class="rcard release" id="hava-nagila" data-audio="" data-reveal>
+          <div class="rcard__case release__case">
             <span class="disc" aria-hidden="true"></span>
-            <img class="release__cover" src="img/hava-nagila.webp" width="300" height="300" loading="lazy" alt="Обложка «Хава нагила (дабстеп ремикс)»: фура с сабвуферами и флагами Израиля под молниями">
+            <img class="rcard__cover" src="img/hava-nagila.webp" width="300" height="300" loading="lazy" alt="Обложка «Хава нагила (дабстеп ремикс)»: фура с сабвуферами и флагами Израиля под молниями">
+            <span class="tag">✦ ремикс</span>
           </div>
-          <div class="release__meta">
-            <h3 class="release__name">Хава нагила <span class="release__alt">(дабстеп ремикс)</span></h3>
-            <p class="release__artist">tq2ka</p>
-            <p class="release__listen"><a href="https://music.yandex.ru/search?text=tq2ka%20%D0%A5%D0%B0%D0%B2%D0%B0%20%D0%BD%D0%B0%D0%B3%D0%B8%D0%BB%D0%B0" target="_blank" rel="noopener">Найти в Яндекс Музыке</a></p>
-          </div>
+          <p class="rcard__by">tq2ka</p>
+          <h3 class="rcard__t release__name">Хава нагила <em>(дабстеп ремикс)</em></h3>
+          <a class="rcard__go" href="https://music.yandex.ru/search?text=tq2ka%20%D0%A5%D0%B0%D0%B2%D0%B0%20%D0%BD%D0%B0%D0%B3%D0%B8%D0%BB%D0%B0" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
         </li>
-
-        <li class="release" id="ytsuken" data-audio="">
-          <div class="release__case">
+        <li class="rcard release" id="ytsuken" data-audio="" data-reveal>
+          <div class="rcard__case release__case">
             <span class="disc" aria-hidden="true"></span>
-            <img class="release__cover" src="img/ytsuken.webp" width="300" height="300" loading="lazy" alt="Обложка «йцукен»: золотой диск в прозрачной коробке с красной наклейкой">
+            <img class="rcard__cover" src="img/ytsuken.webp" width="300" height="300" loading="lazy" alt="Обложка «йцукен»: золотой диск в прозрачной коробке с красной наклейкой">
+            <span class="tag">✦ соло</span>
           </div>
-          <div class="release__meta">
-            <h3 class="release__name">йцукен</h3>
-            <p class="release__artist">tq2ka</p>
-            <p class="release__listen"><a href="https://music.yandex.ru/search?text=tq2ka%20%D0%B9%D1%86%D1%83%D0%BA%D0%B5%D0%BD" target="_blank" rel="noopener">Найти в Яндекс Музыке</a></p>
-          </div>
+          <p class="rcard__by">tq2ka</p>
+          <h3 class="rcard__t release__name">йцукен</h3>
+          <a class="rcard__go" href="https://music.yandex.ru/search?text=tq2ka%20%D0%B9%D1%86%D1%83%D0%BA%D0%B5%D0%BD" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
         </li>
-
-        <li class="release" id="almaz" data-audio="">
-          <div class="release__case">
+        <li class="rcard release" id="almaz" data-audio="" data-reveal>
+          <div class="rcard__case release__case">
             <span class="disc" aria-hidden="true"></span>
-            <img class="release__cover" src="img/almaz.webp" width="300" height="300" loading="lazy" alt="Обложка «я алмазный человек»: алмазная фигура среди летящих осколков">
+            <img class="rcard__cover" src="img/almaz.webp" width="300" height="300" loading="lazy" alt="Обложка «я алмазный человек»: алмазная фигура среди летящих осколков">
+            <span class="tag">✦ соло</span>
           </div>
-          <div class="release__meta">
-            <h3 class="release__name">я алмазный человек</h3>
-            <p class="release__artist">tq2ka</p>
-            <p class="release__listen"><a href="https://music.yandex.ru/search?text=tq2ka%20%D1%8F%20%D0%B0%D0%BB%D0%BC%D0%B0%D0%B7%D0%BD%D1%8B%D0%B9%20%D1%87%D0%B5%D0%BB%D0%BE%D0%B2%D0%B5%D0%BA" target="_blank" rel="noopener">Найти в Яндекс Музыке</a></p>
-          </div>
+          <p class="rcard__by">tq2ka</p>
+          <h3 class="rcard__t release__name">я алмазный человек</h3>
+          <a class="rcard__go" href="https://music.yandex.ru/search?text=tq2ka%20%D1%8F%20%D0%B0%D0%BB%D0%BC%D0%B0%D0%B7%D0%BD%D1%8B%D0%B9%20%D1%87%D0%B5%D0%BB%D0%BE%D0%B2%D0%B5%D0%BA" target="_blank" rel="noopener">Слушать <span aria-hidden="true">→</span></a>
         </li>
-
       </ul>
+    </section>
+
+    <!-- ───────── Звучание ───────── -->
+    <section class="section section--alt" id="sound" aria-labelledby="sound-h">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="script">как это звучит</p>
+          <h2 id="sound-h">Звучание</h2>
+        </div>
+      </div>
+
+      <article class="srow" data-reveal>
+        <div class="shot">
+          <span class="shot__disc" data-spin aria-hidden="true"></span>
+          <img src="img/ytsuken.webp" width="300" height="300" loading="lazy" alt="">
+        </div>
+        <div class="srow__text">
+          <p class="srow__n">01</p>
+          <h3>Электроника</h3>
+          <p>«йцукен» — сольный электронный трек tq2ka. Название — первые шесть букв русской раскладки, обложка — золотая пластинка в&nbsp;прозрачной коробке.</p>
+          <a class="more" href="https://music.yandex.ru/search?text=tq2ka%20%D0%B9%D1%86%D1%83%D0%BA%D0%B5%D0%BD" target="_blank" rel="noopener">Слушать «йцукен» <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="srow srow--flip" data-reveal>
+        <div class="shot">
+          <span class="shot__disc" data-spin aria-hidden="true"></span>
+          <img src="img/saint-s.webp" width="300" height="300" loading="lazy" alt="">
+        </div>
+        <div class="srow__text">
+          <p class="srow__n">02</p>
+          <h3>R&amp;B</h3>
+          <p>«Saint S, прости меня» — R&amp;B-сингл, записанный вместе с&nbsp;ГИГАНСТКИЙ СИГМА. На&nbsp;обложке — серебряная фигура на&nbsp;коленях в&nbsp;луче прожектора.</p>
+          <a class="more" href="https://music.yandex.ru/search?text=tq2ka%20Saint%20S%2C%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%B8%20%D0%BC%D0%B5%D0%BD%D1%8F" target="_blank" rel="noopener">Слушать «Saint S» <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="srow" data-reveal>
+        <div class="shot">
+          <span class="shot__disc" data-spin aria-hidden="true"></span>
+          <img src="img/hava-nagila.webp" width="300" height="300" loading="lazy" alt="">
+        </div>
+        <div class="srow__text">
+          <p class="srow__n">03</p>
+          <h3>Дабстеп</h3>
+          <p>«Хава нагила» — еврейская народная песня, пересобранная в&nbsp;дабстеп-ремикс. На&nbsp;обложке — фура из&nbsp;сабвуферов под грозой.</p>
+          <a class="more" href="https://music.yandex.ru/search?text=tq2ka%20%D0%A5%D0%B0%D0%B2%D0%B0%20%D0%BD%D0%B0%D0%B3%D0%B8%D0%BB%D0%B0" target="_blank" rel="noopener">Слушать ремикс <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </section>
+
+    <!-- ───────── Цитата ───────── -->
+    <section class="quote" aria-label="Цитата">
+      <figure data-reveal>
+        <div class="quote__cover">
+          <img src="img/almaz.webp" width="300" height="300" loading="lazy" alt="Обложка «я алмазный человек»">
+        </div>
+        <blockquote><p>Я&nbsp;алмазный человек</p></blockquote>
+        <figcaption>tq2ka, название трека</figcaption>
+        <svg class="quote__wave" viewBox="0 0 300 30" aria-hidden="true"><path d="M2 15c18-14 30 14 48 0s30-14 48 0 30 14 48 0 30-14 48 0 30 14 48 0 30-14 48 0"/></svg>
+      </figure>
     </section>
   </main>
 
-  <footer class="foot">
-    <p class="foot__mark">tq2ka</p>
-    <p class="foot__small"><a href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Яндекс Музыка</a></p>
-    <p class="foot__small">© 2026 tq2ka.ru</p>
+  <!-- ───────── Подвал ───────── -->
+  <footer class="foot" id="listen">
+    <div class="foot__grid">
+      <div data-reveal>
+        <p class="script">включай громче</p>
+        <h2 class="foot__h">Слушай <em>tq2ka</em></h2>
+        <p class="foot__p">Все четыре релиза — в&nbsp;Яндекс Музыке.</p>
+        <a class="btn btn--light" data-magnetic href="https://music.yandex.ru/artist/26457959" target="_blank" rel="noopener">Открыть Яндекс Музыку <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="foot__list" data-reveal>
+        <li><a href="https://music.yandex.ru/search?text=tq2ka%20Saint%20S%2C%20%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%B8%20%D0%BC%D0%B5%D0%BD%D1%8F" target="_blank" rel="noopener"><span>Saint S, прости меня</span><i aria-hidden="true">→</i></a></li>
+        <li><a href="https://music.yandex.ru/search?text=tq2ka%20%D0%A5%D0%B0%D0%B2%D0%B0%20%D0%BD%D0%B0%D0%B3%D0%B8%D0%BB%D0%B0" target="_blank" rel="noopener"><span>Хава нагила (дабстеп ремикс)</span><i aria-hidden="true">→</i></a></li>
+        <li><a href="https://music.yandex.ru/search?text=tq2ka%20%D0%B9%D1%86%D1%83%D0%BA%D0%B5%D0%BD" target="_blank" rel="noopener"><span>йцукен</span><i aria-hidden="true">→</i></a></li>
+        <li><a href="https://music.yandex.ru/search?text=tq2ka%20%D1%8F%20%D0%B0%D0%BB%D0%BC%D0%B0%D0%B7%D0%BD%D1%8B%D0%B9%20%D1%87%D0%B5%D0%BB%D0%BE%D0%B2%D0%B5%D0%BA" target="_blank" rel="noopener"><span>я алмазный человек</span><i aria-hidden="true">→</i></a></li>
+      </ul>
+    </div>
+    <p class="foot__giant" aria-hidden="true">tq2ka</p>
+    <div class="foot__bar">
+      <span>© 2026 tq2ka</span>
+      <span>tq2ka.ru</span>
+      <a class="up" href="#top" aria-label="Наверх">↑</a>
+    </div>
   </footer>
 
   <script src="js/sparkles.js" defer></script>

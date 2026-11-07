@@ -5,23 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Страница не найдена — tq2ka</title>
   <meta name="robots" content="noindex">
-  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="stylesheet" href="/css/fonts.css">
   <style>
-    @font-face{font-family:'Cormorant Garamond';font-weight:300;font-display:swap;src:url(/fonts/cormorant-garamond-cyrillic-4f4a82.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
-    @font-face{font-family:'Cormorant Garamond';font-weight:300;font-display:swap;src:url(/fonts/cormorant-garamond-latin-2fed1d.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-    @font-face{font-family:'Onest';font-weight:500;font-display:swap;src:url(/fonts/onest-cyrillic-4c7562.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
-    :root{--platinum:#e7eaee;--ink:#141a2a;--graphite:#535c6e;--lemonade:#d8365f}
+    :root{--bg:#f7f7fa;--ink:#16171f;--muted:#5d5f6e;--pink:#e0306a;color-scheme:light}
+    @media (prefers-color-scheme:dark){:root{--bg:#0f1016;--ink:#ecedf3;--muted:#a3a5b5;--pink:#ff4f86;color-scheme:dark}}
     *{box-sizing:border-box}
-    body{margin:0;min-height:100svh;display:grid;place-content:center;gap:28px;padding:24px 16px;background:var(--platinum);color:var(--ink);font:400 18px/1.5 'Onest',system-ui,sans-serif;text-align:center}
-    h1{margin:0;font:300 clamp(64px,14vw,160px)/.9 'Cormorant Garamond',serif;letter-spacing:-.02em}
-    p{margin:0;color:var(--graphite)}
-    a{justify-self:center;display:inline-flex;align-items:center;min-height:50px;padding:0 30px;background:var(--ink);color:var(--platinum);font-weight:500;text-decoration:none;clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,14px 100%,0 50%)}
-    a:hover,a:focus-visible{background:var(--lemonade);outline:none}
+    body{margin:0;min-height:100svh;display:grid;place-content:center;justify-items:center;gap:22px;padding:24px 16px;background:var(--bg);color:var(--ink);font:400 18px/1.5 'Onest',system-ui,sans-serif;text-align:center}
+    .script{margin:0;font:600 30px/1 'Caveat',cursive;color:var(--pink);transform:rotate(-3deg)}
+    h1{margin:0;font:500 clamp(96px,22vw,220px)/.85 'Cormorant Garamond',serif;letter-spacing:-.03em}
+    p{margin:0;color:var(--muted)}
+    a{display:inline-flex;align-items:center;gap:10px;min-height:54px;padding:0 28px;border-radius:999px;background:var(--pink);color:#fff;font-weight:500;text-decoration:none;transition:background-color .25s}
+    a:hover{background:var(--ink);color:var(--bg)}
+    a:focus-visible{outline:2px solid var(--pink);outline-offset:4px}
   </style>
 </head>
 <body>
+  <p class="script">тут ничего не огранено</p>
   <h1>404</h1>
   <p>Такой страницы на tq2ka.ru нет.</p>
-  <a href="/">На главную</a>
+  <a href="/">На главную <span aria-hidden="true">→</span></a>
 </body>
 </html>
