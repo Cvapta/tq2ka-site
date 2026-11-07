@@ -468,6 +468,11 @@ a { color: inherit; }
   display: grid; grid-template-columns: 1fr; gap: 56px 28px;
 }
 @media (min-width: 520px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* телефон: одна колонка — карточки по центру */
+@media (max-width: 519px) {
+  .rcard { text-align: center; }
+  .rcard__case { margin-inline: auto; }
+}
 @media (min-width: 1100px) { .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .rcard { position: relative; padding-top: 30px; }
@@ -544,6 +549,8 @@ a { color: inherit; }
 }
 
 .shot { position: relative; width: min(300px, 58vw); aspect-ratio: 1; }
+/* телефон: связка «обложка + выехавший диск» по центру экрана */
+@media (max-width: 859px) { .shot { justify-self: center; translate: -24% 0; } }
 @media (min-width: 860px) {
   .shot { justify-self: center; translate: -18% 0; }
   .srow--flip .shot { translate: -18% 0; }
