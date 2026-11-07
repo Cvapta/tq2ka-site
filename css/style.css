@@ -233,12 +233,19 @@ a { color: inherit; }
   align-items: center;
 }
 @media (min-width: 960px) {
+  /* фото слева, текст справа */
   .hero {
     min-height: 100svh;
-    grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
-    gap: 32px;
+    grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+    gap: 72px;
     padding-bottom: 120px;
   }
+  .hero__art { grid-column: 1; grid-row: 1; }
+  .hero__text { grid-column: 2; grid-row: 1; }
+  .hero .hero__facets { right: auto; left: -14%; }
+  /* пластинка на правом краю фото — к тексту; подпись справа под ней */
+  .hero .badge { left: auto; right: -70px; }
+  .hero .badge__hint { right: auto; left: 58%; text-align: left; transform-origin: 0 0; }
 }
 
 /* схема огранки бриллианта на фоне */
@@ -291,7 +298,7 @@ a { color: inherit; }
 
 /* фото в рамке огранки «изумруд» */
 .hero__art { position: relative; justify-self: center; width: min(470px, 100%); margin-top: 24px; }
-@media (min-width: 960px) { .hero__art { justify-self: end; margin-top: 40px; } }
+@media (min-width: 960px) { .hero__art { justify-self: start; margin-top: 40px; } }
 
 .gem { position: relative; margin: 0; aspect-ratio: 4 / 5; }
 .gem__clip {

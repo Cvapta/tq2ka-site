@@ -108,7 +108,7 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   $$('[data-reveal]').forEach((el) => revIO.observe(el));
 
-  /* ───────── Пластинка: крутишь — играет песня, волна бежит от неё влево ─────────
+  /* ───────── Пластинка: крутишь — играет песня, от неё бежит волна ─────────
      1 оборот в секунду = обычная скорость и тон; быстрее — выше и быстрее, назад — задом наперёд.
      Отпустил — крутится по инерции и замедляется, потом снова медленное вращение «мотора». */
   const deck = $('[data-turntable]');
@@ -268,19 +268,22 @@
 
       const hr = waveCv.getBoundingClientRect(), dr = deck.getBoundingClientRect();
       const r = dr.width / 2;
-      const sx = dr.left - hr.left + r * 0.06; // левый край пластинки
+      const cxw = dr.left - hr.left + r;
+      const dir = cxw < W / 2 ? 1 : -1;          // бежит туда, где больше места: к тексту
+      const sx = cxw + dir * r * 0.94;           // край пластинки
       const sy = dr.top - hr.top + r;
+      const span = dir > 0 ? W - sx : sx;
       const maxA = Math.min(64, r * 0.6);
       const C = Math.max(360, W * 0.42);      // скорость бега волны, px/с
       if (now - rgbAt > 500) { rgb = toRgb(css('--blue')); rgbAt = now; }
 
       // прозрачность по громкости: тихие участки не видны, линия есть только там, где звук
-      const grad = wctx.createLinearGradient(sx, 0, 0, 0);
+      const grad = wctx.createLinearGradient(sx, 0, sx + dir * span, 0);
       let lastStop = -1;
       wctx.beginPath();
       let j = hist.length - 2, started = false;
-      for (let x = sx; x >= -6; x -= 3) {
-        const d = sx - x;
+      for (let d = 0; d <= span + 6; d += 3) {
+        const x = sx + dir * d;
         const te = now - (d / C) * 1000;
         while (j > 0 && hist[j][0] > te) j--;
         if (hist[j][0] > te) break; // дальше — то, что было до истории
@@ -291,7 +294,7 @@
         const env = Math.min(1, d / 36);
         const y = sy + maxA * a * env * (Math.sin(p) + 0.28 * Math.sin(2.1 * p + 0.7)) / 1.28;
         if (!started) { wctx.moveTo(x, y); started = true; } else wctx.lineTo(x, y);
-        const stop = Math.min(1, d / Math.max(sx, 1));
+        const stop = Math.min(1, d / Math.max(span, 1));
         if (stop - lastStop > 0.012) {
           grad.addColorStop(stop, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${Math.min(1, a / 0.1).toFixed(3)})`);
           lastStop = stop;

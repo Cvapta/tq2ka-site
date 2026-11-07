@@ -12,7 +12,7 @@ const [, , W = '1440', tag = 'd'] = process.argv;
   const errs = [];
   p.on('pageerror', (e) => errs.push(e.message));
   p.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errs.push(m.text()); });
-  await p.goto('http://localhost:8770/', { waitUntil: 'networkidle' });
+  await p.goto(process.argv[4] || 'http://localhost:8770/', { waitUntil: 'networkidle' });
   await p.waitForTimeout(2500);
 
   const wavePx = () => p.evaluate(() => {
